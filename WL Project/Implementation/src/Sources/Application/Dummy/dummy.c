@@ -109,9 +109,7 @@ ruw_TransitionTime=MILISECONDS_400;  //800 para iniciar en alto   0 para bajo
 re_WL_Status=NULO;
 
 /**/
-for(;;)
-{	
-}
+do {}while(1);
 
 }
 
@@ -171,7 +169,7 @@ void dummy_Check_Button_Press(void)
 
 
 
-void dummy_Check_Time_Press()
+void dummy_Check_Time_Press(void)
 {
 	if( rps_ButtonPtr->ruw_Countus > MILISECONDS_10)  ///10 MILI SEC  
 	{
@@ -211,7 +209,7 @@ void dummy_Check_Time_Press()
 	}
 }
 /*******************************************************/
-void dummy_Led_Response()
+void dummy_Led_Response(void)
 {
 static T_UBYTE	 rub_FlagDelay=1;
 	if(MILISECONDS_400 < ruw_TransitionTime  && rub_FlagDelay)
