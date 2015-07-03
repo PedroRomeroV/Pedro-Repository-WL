@@ -37,7 +37,7 @@ typedef enum
 typedef struct 
 {
 const	T_UBYTE cub_ID;
-		T_UBYTE rub_TopTable;
+const	T_UBYTE cub_TopList;
 	   T_UWORD ruw_Countus;
 }T_BUTTONSTRUCT;
 
@@ -45,12 +45,15 @@ const	T_UBYTE cub_ID;
 typedef struct 
 {
 	T_UBYTE rub_LedPosition;
-	T_UBYTE ruw_allLeds[12];
+const	T_UBYTE cub_allLeds[12];
 }T_LEDSTRUCT;
 
 
 /*-- Defines -----------------------------------------------------------------*/
-
+#define MILISECONDS_10                 20
+#define MILISECONDS_500               1000
+#define SECONDS_5                     10000
+#define MILISECONDS_400               800
 
 /*-- Function Prototypes -----------------------------------------------------*/
 

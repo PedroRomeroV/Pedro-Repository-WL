@@ -105,7 +105,7 @@ void dummy_Init_endlessloop(void)
 {
 rps_ButtonPtr = &rs_Button_table[0];
 rps_LedPtr = &rs_Led_table;
-ruw_TransitionTime=800;  //800 para iniciar en alto   0 para bajo
+ruw_TransitionTime=MILISECONDS_400;  //800 para iniciar en alto   0 para bajo
 re_WL_Status=NULO;
 
 /**/
@@ -115,8 +115,7 @@ for(;;)
 
 }
 
-/*******************************************************/
-
+/*******************************************************/  
 void dummy_Check_Button_Press(void)
 {
 	auto T_SBYTE lsb_Total_push=0;
@@ -137,10 +136,6 @@ void dummy_Check_Button_Press(void)
 	}
 	rps_ButtonPtr->ruw_Countus++;
 
-	if(lsb_Total_push == 1 )
-	{
-		// esto es boton valido
-	}
 	if(lsb_Total_push == 0 )
 	{
 		// esto es que no se presiono ningun boton
@@ -150,7 +145,7 @@ void dummy_Check_Button_Press(void)
 			if(re_WL_Status == MANUAL) //se deja de presionar manual por lo tanto se apagan los led y se deja de incrementar
 		{
 		re_WL_Status=NULO;
-		ruw_TransitionTime=800;	
+		ruw_TransitionTime=MILISECONDS_400;	
 		LED_OFF(LED_GREEN);
 		LED_OFF(LED_BLUE);
 		}
@@ -161,7 +156,7 @@ void dummy_Check_Button_Press(void)
 		rs_Button_table[UP].ruw_Countus=0;
 		rs_Button_table[DOWN].ruw_Countus=0;
 		rs_Button_table[ANTIPINCH].ruw_Countus=0;
-		ruw_TransitionTime=800;	
+		ruw_TransitionTime=MILISECONDS_400;	
 		re_WL_Status=NULO;
 		LED_OFF(LED_GREEN);
 		LED_OFF(LED_BLUE);
@@ -173,11 +168,14 @@ void dummy_Check_Button_Press(void)
 }
 
 /*******************************************************/
+
+
+
 void dummy_Check_Time_Press()
 {
-	if( rps_ButtonPtr->ruw_Countus > 20)  ///10 MILI SEC  
+	if( rps_ButtonPtr->ruw_Countus > MILISECONDS_10)  ///10 MILI SEC  
 	{
-		//se ha considerado un boton valido por lado se pregunta hacia donde y 
+		//se ha considerado un boton valido por lo tanto  se pregunta cual fue 
 
 		if(rps_ButtonPtr->cub_ID == BUTTON_UP)
 		{
@@ -202,7 +200,7 @@ void dummy_Check_Time_Press()
 			}	
 			
 		}
-		if( rps_ButtonPtr->ruw_Countus > 1000)
+		if( rps_ButtonPtr->ruw_Countus > MILISECONDS_500)
 		{
 //		 LED_ON(LED_BLUE);
 			//run trassiton time activate  manual
@@ -213,53 +211,51 @@ void dummy_Check_Time_Press()
 	}
 }
 /*******************************************************/
-
-
 void dummy_Led_Response()
 {
 static T_UBYTE	 rub_FlagDelay=1;
-	if(800 < ruw_TransitionTime  && rub_FlagDelay)
+	if(MILISECONDS_400 < ruw_TransitionTime  && rub_FlagDelay)
 	{
 		ruw_TransitionTime=0;
 		if(rps_ButtonPtr->cub_ID == BUTTON_UP)
 		{
-			if(rs_Led_table.rub_LedPosition != 10)
+			if(rs_Led_table.rub_LedPosition != rps_ButtonPtr->cub_TopList)
 			{
-			LED_ON(rs_Led_table.ruw_allLeds[rs_Led_table.rub_LedPosition]);
+			LED_ON(rs_Led_table.cub_allLeds[rs_Led_table.rub_LedPosition]);
 			rs_Led_table.rub_LedPosition++;
 			}
-			if(rs_Led_table.rub_LedPosition == 10)  //tope de la tabla
+			if(rs_Led_table.rub_LedPosition == rps_ButtonPtr->cub_TopList)  //tope de la tabla
 			{
 				re_WL_Status=NULO;
-				ruw_TransitionTime=800;	
+				ruw_TransitionTime=MILISECONDS_400;	
 				LED_OFF(LED_GREEN);
 				LED_OFF(LED_BLUE);
 			}
 		}
 		if(rps_ButtonPtr->cub_ID == BUTTON_DOWN)
 		{
-			if(rs_Led_table.rub_LedPosition != 0)  //fondo de la tabla
+			if(rs_Led_table.rub_LedPosition != rps_ButtonPtr->cub_TopList)  //fondo de la tabla
 			{
 				rs_Led_table.rub_LedPosition--;
-				LED_OFF(rs_Led_table.ruw_allLeds[rs_Led_table.rub_LedPosition]);
+				LED_OFF(rs_Led_table.cub_allLeds[rs_Led_table.rub_LedPosition]);
 			}
-			if(rs_Led_table.rub_LedPosition == 0)
+			if(rs_Led_table.rub_LedPosition == rps_ButtonPtr->cub_TopList)
 			{
 				re_WL_Status=NULO;
-				ruw_TransitionTime=800;	
+				ruw_TransitionTime=MILISECONDS_400;	
 				LED_OFF(LED_GREEN);
 				LED_OFF(LED_BLUE);
 			}
 		}
 		if(rps_ButtonPtr->cub_ID == BUTTON_ANTIPINCH  )
 		{
-			if(rs_Led_table.rub_LedPosition != 0)  //fondo de la tabla
+			if(rs_Led_table.rub_LedPosition != rps_ButtonPtr->cub_TopList)  //fondo de la tabla
 			{
 				rs_Led_table.rub_LedPosition--;
-				LED_OFF(rs_Led_table.ruw_allLeds[rs_Led_table.rub_LedPosition]);
+				LED_OFF(rs_Led_table.cub_allLeds[rs_Led_table.rub_LedPosition]);
 				
 			}
-			if(rs_Led_table.rub_LedPosition == 0)
+			if(rs_Led_table.rub_LedPosition == rps_ButtonPtr->cub_TopList)
 			{
 				rub_FlagDelay=0;
 				ruw_TransitionTime=0;	
@@ -269,9 +265,9 @@ static T_UBYTE	 rub_FlagDelay=1;
 			}	
 		}
 	}
-	if(ruw_TransitionTime == 10000) 
+	if(ruw_TransitionTime == SECONDS_5) 
 		{
-		ruw_TransitionTime=800;
+		ruw_TransitionTime=MILISECONDS_400;
 		re_WL_Status=NULO;	
 		rub_FlagDelay=1;
 		}
